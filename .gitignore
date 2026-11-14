@@ -1,0 +1,5 @@
+*.o
+*.exe
+/collision_demo
+test/carpisma_test
+test/frustum_test
