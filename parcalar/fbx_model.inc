@@ -88,13 +88,18 @@ struct FbxModel {
     int kose_sayisi;
     glm::vec3 renk;          // ilk materyalin rengi, yoksa acik gri
     glm::vec3 kutu_min, kutu_max;
+    float yatay_yaricap;     // y eksenine en uzak kosenin uzakligi; dik silindir bunu sarar
 
     bool yukle(const char* yol, float hedef_boy) {
         vbo = 0;
         kose_sayisi = 0;
+        yatay_yaricap = 0.0f;
         std::vector<float> veri;
         if (!fbx_oku(yol, hedef_boy, veri, kutu_min, kutu_max, renk)) return false;
         kose_sayisi = (int)(veri.size() / KOSE_FLOAT);
+        // cokgen kesitli modellerde (varil gibi) koseler kutunun yari genisliginden disari tasar
+        for (size_t i = 0; i < veri.size(); i += KOSE_FLOAT)
+            yatay_yaricap = glm::max(yatay_yaricap, glm::length(glm::vec2(veri[i], veri[i + 2])));
 #ifndef TEST_DERLEME
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -112,8 +117,8 @@ struct FbxModel {
         glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
-        glEnable(GL_COLOR_MATERIAL);
         glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+        glEnable(GL_COLOR_MATERIAL);
 
         GLsizei adim = (GLsizei)(KOSE_FLOAT * sizeof(float));
         glBindBuffer(GL_ARRAY_BUFFER, vbo);

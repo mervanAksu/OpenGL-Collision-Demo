@@ -1,4 +1,6 @@
-// GL olmadan yukleme ve normalizasyon testi: g++ -DTEST_DERLEME ... ufbx.o
+// GL olmadan yukleme ve normalizasyon testi, proje kokunden calistirilir (models/ okunur):
+//   g++ -std=c++11 -DTEST_DERLEME -DGLEW_NO_GLU <basliklar> -Isrc -Iparcalar
+//       test/fbx_yukle_test.cpp ufbx.o
 #include "ortak.inc"
 #include "fbx_model.inc"
 
@@ -29,27 +31,46 @@ void dene(const char* yol, float hedef_boy) {
         float nl = glm::length(glm::vec3(veri[i + 3], veri[i + 4], veri[i + 5]));
         if (!yakin(nl, 1.0f)) normal_iyi = false;
     }
-    bool iyi = m.kose_sayisi % 3 == 0 && yakin(en_uzun, hedef_boy) && yakin(m.kutu_min.y, 0.0f)
+    // renkler gecerli araliktaysa ve model tek renk degilse materyaller okunmus demektir
+    bool renk_iyi = true;
+    std::vector<glm::vec3> renkler;
+    float en_uzak_yatay = 0.0f;
+    for (size_t i = 0; i < veri.size(); i += KOSE_FLOAT) {
+        glm::vec3 c(veri[i + 6], veri[i + 7], veri[i + 8]);
+        if (glm::min(c.r, glm::min(c.g, c.b)) < 0.0f || glm::max(c.r, glm::max(c.g, c.b)) > 1.0f)
+            renk_iyi = false;
+        bool yeni = true;
+        for (size_t j = 0; j < renkler.size(); j++)
+            if (glm::length(renkler[j] - c) < 1e-3f) yeni = false;
+        if (yeni) renkler.push_back(c);
+        en_uzak_yatay = glm::max(en_uzak_yatay, glm::length(glm::vec2(veri[i], veri[i + 2])));
+    }
+    bool iyi = m.kose_sayisi > 0 && m.kose_sayisi % 3 == 0 && yakin(en_uzun, hedef_boy)
+        && yakin(m.kutu_min.y, 0.0f)
         && yakin(m.kutu_min.x, -m.kutu_max.x) && yakin(m.kutu_min.z, -m.kutu_max.z)
-        && yakin(glm::length(gmin - m.kutu_min), 0.0f) && yakin(glm::length(gmax - m.kutu_max), 0.0f)
-        && normal_iyi;
-    printf("  en_uzun=%.4f hedef=%.4f normaller_birim=%d -> %s\n", en_uzun, hedef_boy, normal_iyi,
+        && yakin(glm::length(gmin - m.kutu_min), 0.0f)
+        && yakin(glm::length(gmax - m.kutu_max), 0.0f)
+        && normal_iyi && renk_iyi && renkler.size() >= 2 && yakin(m.yatay_yaricap, en_uzak_yatay);
+    printf("  en_uzun=%.4f hedef=%.4f normaller_birim=%d renk_sayisi=%d yatay_r=%.4f -> %s\n",
+           en_uzun, hedef_boy, normal_iyi, (int)renkler.size(), m.yatay_yaricap,
            iyi ? "GECTI" : "KALDI");
     if (!iyi) hata_sayisi++;
     m.bosalt();
 }
 
 int main() {
-    const char* d = "/home/claude/deps/ufbx/data/";
-    const char* dosyalar[] = { "blender_272_cube_7400_binary.fbx", "maya_cube_7500_binary.fbx",
-        "blender_282_suzanne_and_transform_7400_binary.fbx", "blender_293_instancing_7400_binary.fbx",
-        "blender_293_material_mapping_7400_binary.fbx" };
-    float boylar[] = { 2.0f, 1.5f, 3.0f, 1.0f, 2.5f };
-    for (int i = 0; i < 5; i++) {
-        char yol[512];
-        snprintf(yol, sizeof(yol), "%s%s", d, dosyalar[i]);
-        dene(yol, boylar[i]);
-    }
+    // sahnedeki dosyalar ve boylar
+    const char* dosyalar[] = { "models/araba.fbx", "models/insan.fbx", "models/agac.fbx",
+                               "models/kasa.fbx", "models/varil.fbx" };
+    float boylar[] = { 3.2f, 1.8f, 4.0f, 1.2f, 1.1f };
+    for (int i = 0; i < 5; i++) dene(dosyalar[i], boylar[i]);
+
+    // olmayan dosya cokmeden false donmeli
+    FbxModel bos;
+    bool acilmadi = !bos.yukle("models/olmayan_dosya.fbx", 1.0f);
+    printf("olmayan dosya -> %s\n", acilmadi ? "GECTI" : "KALDI");
+    if (!acilmadi) hata_sayisi++;
+
     printf("hata_sayisi=%d\n", hata_sayisi);
     return hata_sayisi == 0 ? 0 : 1;
 }

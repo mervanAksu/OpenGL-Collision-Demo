@@ -11,6 +11,7 @@ struct FbxModel {
     int kose_sayisi;
     glm::vec3 renk;          // FBX materyalinin diffuse rengi yoksa acik gri
     glm::vec3 kutu_min, kutu_max;   // olceklenmis modelin AABB'si (model uzayi)
+    float yatay_yaricap;            // y eksenine en uzak kosenin uzakligi (dik silindir yaricapi)
     bool yukle(const char* yol, float hedef_boy);
     void ciz() const;        // o anki MODELVIEW ile cizer, renk ve isik durumunu kendi ayarlar
     void bosalt();
@@ -62,6 +63,7 @@ struct Camera {
     void kaydir(float dx, float dy);   // hedefi ekran duzleminde tasir
 };
 struct Frustum {
+    glm::mat4 pv;                      // duzlemlerin cikarildigi matris (kilitliyken cizim icin)
     glm::vec4 duzlem[6];               // (a,b,c,d), normal ice bakar, normalize
     void guncelle(const glm::mat4& pv);    // projeksiyon * bakis matrisinden 6 duzlem
     bool kure_gorunur(const glm::vec3& merkez, float r) const;
@@ -70,5 +72,14 @@ struct Frustum {
 - `test/frustum_test.cpp`: bilinen bir kamera icin on/arka/yan noktalarin dogru siniflandigini sinar.
 
 ## Sahne (sef)
+`sahne.inc` once GL'siz mantigi tasir (sekil olusturma, sekil guncelleme, `kirpma_yaricapi`,
+`tasima_yonu`, `nesneyi_tasi`, `projeksiyon_matrisi`, `frustum_koseleri`), sonra
+`#ifndef TEST_DERLEME` icinde cizim, girdi ve `main`. Girdi fonksiyonlari yalnizca tuslari okuyup
+bu mantigi cagirir.
+`test/sahne_test.cpp` mantik kismini gercek modellerle sinar.
+
+`#ifndef TEST_DERLEME` bloklarinda `#else` kullanilmaz: `araclar/birlestir.sh` yalnizca bu
+bloklarin kendi satirlarini atar, diger `#if/#ifdef` bloklarini oldugu gibi birakir.
+
 GLFW pencere + girdi, isik, zemin izgarasi, 5 model + 5 PhysObj, secili nesneyi klavyeyle
 tasima, her karede: carpisma denetimi -> frustum guncelle -> gorunenleri ciz -> baslikta sayac.

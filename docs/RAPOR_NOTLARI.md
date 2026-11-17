@@ -23,7 +23,7 @@ her başlığın altına programdan aldığın ekran görüntüsünü koy.
 |---|---|---|
 | araba | yatay kapsül | uzun kenar = boy, diğer iki kenarın büyüğü / 2 = yarıçap |
 | insan | dik kapsül | yükseklik = boy, dar yatay kenar / 2 = yarıçap |
-| ağaç, varil | dik silindir | yükseklik = boy, geniş yatay kenar / 2 = yarıçap |
+| ağaç, varil | dik silindir | yükseklik = boy, y eksenine en uzak köşenin uzaklığı = yarıçap |
 | kasa | küre | kutu yarı köşegeninin 0.8'i |
 
 Şekiller `glBegin(GL_LINE_LOOP / GL_LINE_STRIP / GL_LINES)` ile tel kafes çizilir; çarpışan kırmızı, diğerleri yeşil.
@@ -56,9 +56,17 @@ Bir nokta görüş hacminin içindeyse kırpma (clip) koordinatlarında −w ≤
 clip = PV · p olduğundan her eşitsizlik p için bir düzlem denklemidir: düzlemler
 PV matrisinin `4. satır ± 1., 2., 3. satır` toplamlarıdır. Düzlemler normalize edilir;
 bir nesnenin sınır küresi herhangi bir düzlemin arkasında yarıçapından fazla kalıyorsa çizilmez.
-Pencere başlığındaki "cizilen: x/5" sayacı sonucu gösterir. `K` tuşu frustumu dondurur:
-kamerayı çevirince dışarıda kalan nesnelerin çizilmediği görülür.
+Pencere başlığındaki "cizilen: x/5" sayacı sonucu, "kirpma: acik/kapali/kilitli" durumu gösterir.
+`K` tuşu frustumu dondurur ve sarı çizer: kamera uzaklaşınca sarı hacmin dışında kalan nesnelerin
+çizilmediği görülür. Sarı çizgiler, NDC küpünün 8 köşesinin (PV)⁻¹ ile dünyaya taşınmasıyla bulunur.
 
 ## Doğrulama
-Çarpışma fonksiyonları için 143 kontrol (elle hesaplanmış durumlar + 2000 rastgele çiftin
-kaba örnekleme ile karşılaştırılması), frustum için 28 kontrol var (`test/` klasörü).
+- Çarpışma fonksiyonları: 143 kontrol (elle hesaplanmış durumlar + 2000 rastgele çiftin kaba
+  örneklemeyle karşılaştırılması).
+- Frustum: 28 kontrol; rastgele noktalar clip uzayındaki −w ≤ x, y, z ≤ w koşuluyla karşılaştırılır.
+- Sahne: 109 kontrol; örneğin kırpma küresinin her konum ve açıda modelin bütün köşelerini
+  kapsadığı, yani görünen bir nesnenin asla kırpılmadığı sınanır. Her nesne çifti için
+  çarpışmanın başladığı mesafe, çarpışma kodundan bağımsız bir yöntemle (iki şeklin içinde aynı
+  anda bulunan bir nokta sık bir ızgarada aranarak) bulunur; iki sonuç 1 cm içinde örtüşür.
+- Ekran testi: program gerçek OpenGL ile çalıştırılıp ekrandan piksel okunur. Kırpma açıkken ve
+  kapalıyken görüntünün piksel piksel aynı çıkması, kırpmanın yalnızca görünmeyenleri attığını gösterir.

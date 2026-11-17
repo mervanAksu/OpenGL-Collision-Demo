@@ -22,11 +22,11 @@ içeren, çarpışma denetimi ve orbit kamera destekleyen etkileşimli 3B sahne.
 | Sol fare / sağ fare / tekerlek | Kamerayı döndür / kaydır / yaklaştır |
 | W A S D, Z X | Kamerayı klavyeyle döndür, yaklaştır-uzaklaştır |
 | 1–5, TAB | Nesne seç |
-| Ok tuşları, PgUp / PgDn | Seçili nesneyi taşı, yükselt-alçalt |
+| Ok tuşları, PgUp / PgDn | Seçili nesneyi kameraya göre taşı, yükselt-alçalt |
 | Q / E | Seçili nesneyi döndür |
 | G | Çarpışma şekillerini göster / gizle |
 | C | Frustum kırpmayı aç / kapa |
-| K | Frustumu kilitle (kırpılan nesneleri dışarıdan görmek için) |
+| K | Frustumu kilitle; görüş hacmi sarı çizilir, dışında kalanlar çizilmez |
 | R | Sahneyi sıfırla |
 | ESC | Çıkış |
 
@@ -54,7 +54,7 @@ models/     5 FBX model
 Makefile
 parcalar/   main.cpp'yi oluşturan parçalar (FBX, çarpışma, kamera, sahne)
 test/       OpenGL gerektirmeyen birim testleri
-araclar/    birlestir.sh (parçalardan main.cpp üretir), test.sh
+araclar/    birlestir.sh (parçalardan main.cpp üretir), test.sh, ekran_testi.sh
 docs/       ödev metni, mimari sözleşme, kod stili, model kaynakları, rapor notları
 .claude/    alt ajan tanımları
 ```
@@ -80,11 +80,19 @@ Kurallar `CLAUDE.md`, ajan tanımları `.claude/agents/` altındadır.
 ## Testler
 
 ```
-sh araclar/test.sh
+sh araclar/test.sh            # birim testleri, her platformda
+sh araclar/ekran_testi.sh     # programin tamami gercek OpenGL ile (yalnizca Linux + Xvfb)
 ```
 
-Çarpışma matematiği için 143, frustum için 28 kontrol çalışır (elle hesaplanmış durumlar ve rastgele
-üretilmiş çiftlerin kaba örneklemeyle karşılaştırılması).
+| Test | Ne sınar |
+|---|---|
+| `test/carpisma_test.cpp` | 6 çarpışma testi: elle hesaplanmış durumlar + 2000 rastgele çiftin kaba örneklemeyle karşılaştırılması (143 kontrol) |
+| `test/frustum_test.cpp` | Kamera ve frustum düzlemleri, rastgele noktaların clip uzayıyla karşılaştırılması (28 kontrol) |
+| `test/fbx_yukle_test.cpp` | 5 modelin yüklenmesi, ölçeklenmesi, normaller, materyal renkleri, olmayan dosya |
+| `test/sahne_test.cpp` | Şekillerin modellere oturması, dönüşün `glRotatef` ile aynılığı, kırpma küresinin her açıda modeli kapsaması, her çiftte çarpışmanın başladığı mesafenin bağımsız bir ızgara taramasıyla karşılaştırılması, kameraya göre taşıma, hız sınırı, frustum köşeleri (109 kontrol) |
+| `test/ekran/senaryo*.txt` | Programı Xvfb üzerinde senaryolu tuş/fare girdileriyle çalıştırır, ekrandan piksel okur; her karede GL hatası ve durum sızıntısı denetler. Takılma, simge durumu, pencere boyutu ve açılışta K da sınanır (3 senaryo, 57 kontrol) |
+
+`SANITIZER=1` ile iki betik de AddressSanitizer + UBSan altında çalışır (Linux/macOS).
 
 ## Modeller
 

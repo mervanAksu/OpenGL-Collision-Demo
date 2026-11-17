@@ -157,6 +157,9 @@ struct CollisionSystem {
 
 #ifndef TEST_DERLEME
 const int DILIM = 24;   // cemberdeki kose sayisi
+// cokgenin kenarlari cemberin icinden gecer; koseler bu kadar disariya konunca
+// cizilen tel kafes gercek seklin tamamen disinda kalir
+const float CIZIM_PAYI = 1.0f / cosf(PI / DILIM);
 
 // merkez etrafinda u ve v birim vektorlerinin duzleminde cember
 void cember_ciz(const glm::vec3& merkez, const glm::vec3& u, const glm::vec3& v, float r) {
@@ -196,25 +199,26 @@ void yan_cizgiler(const glm::vec3& alt, const glm::vec3& ust,
 void sekil_ciz(const PhysObj& n) {
     if (n.carpisti) glColor3f(1.0f, 0.0f, 0.0f);
     else glColor3f(0.0f, 1.0f, 0.0f);
+    float r = n.yaricap * CIZIM_PAYI;
 
     glm::vec3 x_yon(1.0f, 0.0f, 0.0f), y_yon(0.0f, 1.0f, 0.0f), z_yon(0.0f, 0.0f, 1.0f);
     if (n.tip == KURE) {
         for (int i = -2; i <= 2; i++) {
             float enlem = i * PI / 6.0f;
-            glm::vec3 merkez = n.konum + y_yon * (n.yaricap * sinf(enlem));
-            cember_ciz(merkez, x_yon, z_yon, n.yaricap * cosf(enlem));
+            glm::vec3 merkez = n.konum + y_yon * (r * sinf(enlem));
+            cember_ciz(merkez, x_yon, z_yon, r * cosf(enlem));
         }
         for (int i = 0; i < 4; i++) {
             float boylam = i * PI / 4.0f;
             glm::vec3 yatay(cosf(boylam), 0.0f, sinf(boylam));
-            cember_ciz(n.konum, yatay, y_yon, n.yaricap);
+            cember_ciz(n.konum, yatay, y_yon, r);
         }
     } else if (n.tip == SILINDIR) {
         glm::vec3 yarim = y_yon * (n.boy * 0.5f);
-        cember_ciz(n.konum - yarim, x_yon, z_yon, n.yaricap);
-        cember_ciz(n.konum, x_yon, z_yon, n.yaricap);
-        cember_ciz(n.konum + yarim, x_yon, z_yon, n.yaricap);
-        yan_cizgiler(n.konum - yarim, n.konum + yarim, x_yon, z_yon, n.yaricap);
+        cember_ciz(n.konum - yarim, x_yon, z_yon, r);
+        cember_ciz(n.konum, x_yon, z_yon, r);
+        cember_ciz(n.konum + yarim, x_yon, z_yon, r);
+        yan_cizgiler(n.konum - yarim, n.konum + yarim, x_yon, z_yon, r);
     } else {
         // eksene dik iki birim vektor; eksen y'ye yakinsa yardimci olarak x alinir
         glm::vec3 yardimci = fabsf(n.eksen.y) < 0.9f ? y_yon : x_yon;
@@ -222,13 +226,13 @@ void sekil_ciz(const PhysObj& n) {
         glm::vec3 v = glm::cross(n.eksen, u);
         glm::vec3 alt, ust;
         kapsul_uclari(n, alt, ust);
-        cember_ciz(alt, u, v, n.yaricap);
-        cember_ciz(ust, u, v, n.yaricap);
-        yan_cizgiler(alt, ust, u, v, n.yaricap);
-        yarim_cember_ciz(ust, u, n.eksen, n.yaricap);
-        yarim_cember_ciz(ust, v, n.eksen, n.yaricap);
-        yarim_cember_ciz(alt, u, -n.eksen, n.yaricap);
-        yarim_cember_ciz(alt, v, -n.eksen, n.yaricap);
+        cember_ciz(alt, u, v, r);
+        cember_ciz(ust, u, v, r);
+        yan_cizgiler(alt, ust, u, v, r);
+        yarim_cember_ciz(ust, u, n.eksen, r);
+        yarim_cember_ciz(ust, v, n.eksen, r);
+        yarim_cember_ciz(alt, u, -n.eksen, r);
+        yarim_cember_ciz(alt, v, -n.eksen, r);
     }
 }
 #endif

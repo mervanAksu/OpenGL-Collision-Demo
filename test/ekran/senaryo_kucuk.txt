@@ -1,0 +1,7 @@
+# PENCERE_BOYUTU=640x480 ile acilir; senaryo.txt'de pencere sonradan 640x480'e kucultulup
+# kaydedilen goruntuyle birebir ayni olmali (boyut olayi viewport ve en-boy oranini guncelliyor)
+kare 3
+yakala
+karsilastir test/ekran/cikti/boyut_640x480.ppm = 0
+tikla ESC
+kare 2

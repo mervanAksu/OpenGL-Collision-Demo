@@ -1,0 +1,215 @@
+# Programin tamamini gercek OpenGL ile sinayan senaryo: sh araclar/ekran_testi.sh
+# Komutlar test/ekran/sahte_glfw.c icinde. Her karede GL hatasi ve durum sizintisi da denetlenir.
+# Tel kafesler tam renkle cizilir: kirmizi (255,0,0), yesil (0,255,0), kilitli frustum sari.
+
+# acilis
+kare 3
+baslik_icerir cizilen: 5/5
+baslik_icerir carpisan cift: 0
+baslik_icerir secili: araba
+baslik_icerir kirpma: acik
+yakala
+piksel yesil > 3000
+piksel kirmizi = 0
+piksel sari = 0
+piksel renkli > 10000
+
+# G: sekiller gizlenir, modeller kalir
+tikla G
+yakala
+piksel yesil = 0
+piksel kirmizi = 0
+piksel renkli > 10000
+tikla G
+kare 1
+
+# carpisma: araba kameranin sagina surulur ve agaca carpar (kapsul - silindir)
+bas SAG
+kare 150
+birak SAG
+kare 1
+baslik_icerir carpisan cift: 1
+yakala
+piksel kirmizi > 500
+# kameraya gore sag: kirmizi agacin bolgesinde; dunya ekseniyle gitseydi varile carpardi
+piksel_bolge 650 150 880 430 kirmizi > 1500
+piksel_bolge 555 420 645 540 kirmizi = 0
+tikla R
+kare 1
+baslik_icerir carpisan cift: 0
+
+# kirpma: cok yaklasinca bazi nesneler kirpilir; C ile kapatinca goruntu birebir ayni kalmali
+tekerlek 30
+kare 2
+baslik_icermez cizilen: 5/5
+yakala
+tikla C
+kare 1
+baslik_icerir kirpma: kapali
+baslik_icerir cizilen: 5/5
+yakala
+degisim = 0
+tikla C
+kare 1
+baslik_icerir kirpma: acik
+
+# K: frustum kilitlenir ve sari cizilir; uzaklasinca kirpilanlar cizilmez
+tikla K
+kare 1
+baslik_icerir kirpma: kilitli
+tekerlek -30
+kare 2
+baslik_icermez cizilen: 5/5
+yakala
+piksel sari > 300
+tikla K
+kare 2
+baslik_icerir kirpma: acik
+baslik_icerir cizilen: 5/5
+yakala
+piksel sari = 0
+# R kilidi de acar
+tikla K
+kare 1
+tikla R
+kare 1
+baslik_icerir kirpma: acik
+
+# fare: imlec olay gelmeden yer degistirmisse ilk surukleme ziplamamali
+imlec 500 350
+fare_bas SOL
+fare 505 350
+fare_birak SOL
+kare 1
+yakala
+tikla R
+fare 500 350
+fare_bas SOL
+fare 505 350
+fare_birak SOL
+kare 1
+yakala
+degisim = 0
+
+# fare ve tekerlek kamerayi oynatir
+fare_bas SOL
+fare 600 380
+fare_birak SOL
+kare 1
+yakala
+degisim > 5000
+fare_bas SAG
+fare 650 380
+fare_birak SAG
+kare 1
+yakala
+degisim > 5000
+tekerlek 3
+kare 1
+yakala
+degisim > 5000
+
+# klavye ile kamera
+tikla R
+kare 1
+yakala
+bas D
+kare 20
+birak D
+kare 1
+yakala
+degisim > 5000
+bas W
+kare 20
+birak W
+kare 1
+yakala
+degisim > 5000
+bas Z
+kare 20
+birak Z
+kare 1
+yakala
+degisim > 5000
+
+# nesne secme, dondurme, kaldirip indirme
+tikla R
+tikla TAB
+kare 1
+baslik_icerir secili: insan
+tikla 1
+kare 1
+baslik_icerir secili: araba
+yakala
+bas Q
+kare 30
+birak Q
+kare 1
+yakala
+degisim > 500
+tikla R
+tikla 5
+kare 1
+baslik_icerir secili: varil
+yakala
+bas PGUP
+kare 30
+birak PGUP
+kare 1
+yakala
+degisim > 500
+# yere kadar indirilince ayni goruntuye donmeli (zemin siniri)
+bas PGDN
+kare 60
+birak PGDN
+kare 1
+yakala
+bas PGUP
+kare 30
+birak PGUP
+bas PGDN
+kare 60
+birak PGDN
+kare 1
+yakala
+degisim = 0
+
+# takilma: 10 saniyelik tek kare nesneyi isinlamamali (dt siniri)
+tikla R
+tikla 1
+kare 1
+bas SAG
+zaman_atla 10
+kare 1
+birak SAG
+kare 1
+baslik_icerir cizilen: 5/5
+baslik_icerir carpisan cift: 0
+
+# pencere boyutu: 640x480'e kucultulmus pencere, o boyutta acilmis pencereyle birebir ayni
+# cizilmeli (senaryo_kucuk.txt bu kaydi karsilastirir)
+tikla R
+tikla 1
+boyut 640 480
+kare 2
+yakala
+piksel yesil > 500
+kaydet test/ekran/cikti/boyut_640x480.ppm
+
+# simge durumu: pencere 0x0 iken hic cizim yapilmamali, geri gelince devam etmeli
+boyut 0 0
+# olayin geldigi kare zaten cizimdeydi; sayac ondan sonra baslar
+kare 1
+cizim_say
+kare 5
+cizim = 0
+boyut 800 600
+kare 2
+cizim > 0
+yakala
+piksel yesil > 500
+baslik_icerir carpisan cift: 0
+
+# ESC ile kapanis
+tikla ESC
+kare 5

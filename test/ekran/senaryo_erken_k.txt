@@ -1,0 +1,10 @@
+# K, ilk kare cizilmeden basilir: kilitlenen frustum bos (sifir) olmamali
+tikla K
+kare 2
+baslik_icerir kirpma: kilitli
+tekerlek -10
+kare 2
+yakala
+piksel sari > 300
+tikla ESC
+kare 2

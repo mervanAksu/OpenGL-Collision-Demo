@@ -1,5 +1,5 @@
-*.o
 *.exe
+*.o
 /collision_demo
-test/carpisma_test
-test/frustum_test
+test/cikti/
+test/ekran/cikti/

@@ -23,6 +23,8 @@ carpisma denetimli, orbit kamerali 3B sahne. Odev metni: `docs/ODEV.md`.
 
 ## Dogrulama komutlari
 - Birlestir: `sh araclar/birlestir.sh`   - Birim testleri: `sh araclar/test.sh`   - Derle: `make`
+- Ekran testi (Linux + Xvfb, programin tamami gercek OpenGL ile): `sh araclar/ekran_testi.sh`
+- Bellek/tanimsiz davranis denetimi: iki test betigi de `SANITIZER=1` ile calisir.
 
 ## Teslim
 Odev icin yalnizca `src/`, `models/`, `Makefile` ve `rapor.pdf` gonderilir. `.claude/`, `CLAUDE.md`,

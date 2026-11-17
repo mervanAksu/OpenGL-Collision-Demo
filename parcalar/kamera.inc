@@ -49,8 +49,10 @@ struct Camera {
 
 struct Frustum {
     glm::vec4 duzlem[6];   // sol, sag, alt, ust, yakin, uzak
+    glm::mat4 pv;          // duzlemlerin cikarildigi matris, kilitliyken cizmek icin saklanir
 
-    void guncelle(const glm::mat4& pv) {
+    void guncelle(const glm::mat4& pv_yeni) {
+        pv = pv_yeni;
         // GLM sutun-oncelikli: i. satir (m[0][i], m[1][i], m[2][i], m[3][i])
         glm::vec4 satir[4];
         for (int i = 0; i < 4; i++) {

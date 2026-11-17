@@ -54,7 +54,8 @@ int main() {
 
     k.hedef = glm::vec3(0.0f); k.yatay = 0.0f; k.dikey = 0.0f;
     glm::vec4 p = k.bakis() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    kontrol("bakis: hedef gorus uzayinda (0,0,-10)", yakin_vec(glm::vec3(p), glm::vec3(0.0f, 0.0f, -10.0f)));
+    kontrol("bakis: hedef gorus uzayinda (0,0,-10)",
+            yakin_vec(glm::vec3(p), glm::vec3(0.0f, 0.0f, -10.0f)));
 
     k.dondur(100.0f, 0.0f);
     kontrol("dondur: sag fare farki yatayi azaltir", yakin(k.yatay, -0.5f));
@@ -75,7 +76,8 @@ int main() {
     k.sifirla();
     k.hedef = glm::vec3(0.0f); k.yatay = 0.0f; k.dikey = 0.0f; k.uzaklik = 10.0f;
     k.kaydir(100.0f, 0.0f);
-    kontrol("kaydir: sag fare farki hedefi -x yonune tasir", k.hedef.x < 0.0f && yakin(k.hedef.y, 0.0f));
+    kontrol("kaydir: sag fare farki hedefi -x yonune tasir",
+            k.hedef.x < 0.0f && yakin(k.hedef.y, 0.0f));
     float yakin_adim = fabsf(k.hedef.x);
     k.hedef = glm::vec3(0.0f); k.uzaklik = 20.0f;
     k.kaydir(100.0f, 0.0f);
@@ -95,7 +97,8 @@ int main() {
     kontrol("cok altta gorunmez", !f.kure_gorunur(glm::vec3(0.0f, -30.0f, 0.0f), 1.0f));
     // z=0'da yari genislik 10*tan(30)*4/3 = 7.70; merkez 8.5'te, yan duzleme uzaklik yaklasik -0.64
     kontrol("yan duzlemi kesen kure gorunur", f.kure_gorunur(glm::vec3(8.5f, 0.0f, 0.0f), 1.5f));
-    kontrol("ayni merkez, kucuk yaricap gorunmez", !f.kure_gorunur(glm::vec3(8.5f, 0.0f, 0.0f), 0.3f));
+    kontrol("ayni merkez, kucuk yaricap gorunmez",
+            !f.kure_gorunur(glm::vec3(8.5f, 0.0f, 0.0f), 0.3f));
 
     bool hepsi_birim = true;
     for (int i = 0; i < 6; i++) {
