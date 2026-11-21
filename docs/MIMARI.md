@@ -7,11 +7,12 @@ Her parca, basinda `#include "ortak.inc"` oldugu varsayilarak tek basina derlene
 ## fbx_model.inc  (ajan: fbx-cizim)
 ```cpp
 struct FbxModel {
-    GLuint vbo;              // pos(3)+normal(3) float, ucgen listesi, index yok
+    GLuint vbo;              // pos(3)+normal(3)+renk(3) float, ucgen listesi, index yok
     int kose_sayisi;
     glm::vec3 renk;          // FBX materyalinin diffuse rengi yoksa acik gri
     glm::vec3 kutu_min, kutu_max;   // olceklenmis modelin AABB'si (model uzayi)
     float yatay_yaricap;            // y eksenine en uzak kosenin uzakligi (dik silindir yaricapi)
+    float merkez_yaricap;           // kutu merkezine en uzak kosenin uzakligi (kure yaricapi)
     bool yukle(const char* yol, float hedef_boy);
     void ciz() const;        // o anki MODELVIEW ile cizer, renk ve isik durumunu kendi ayarlar
     void bosalt();
@@ -20,8 +21,8 @@ struct FbxModel {
 - `yukle`: ufbx ile okur (Y-up, sag el, metre hedefli load opts), tum mesh'leri node'un
   geometry_to_world matrisiyle dunya uzayina tasiyip TEK tampona toplar, yuzleri ucgenler.
   Sonra modeli normalize eder: en uzun AABB kenari `hedef_boy` olur, taban y=0'a oturur,
-  x ve z'de merkezlenir. Birden fazla materyal varsa kose rengi yerine ilk materyalin rengi yeter
-  (istenirse renk de tampona eklenebilir: o zaman pos+normal+renk).
+  x ve z'de merkezlenir. Her yuzun rengi kendi materyalinden alinir ve tampona kose rengi
+  olarak yazilir (pos+normal+renk); `renk` ilk materyalin rengidir.
 - Normal yoksa yuz normali hesaplanir.
 
 ## carpisma.inc  (ajan: carpisma)

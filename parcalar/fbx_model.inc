@@ -89,17 +89,24 @@ struct FbxModel {
     glm::vec3 renk;          // ilk materyalin rengi, yoksa acik gri
     glm::vec3 kutu_min, kutu_max;
     float yatay_yaricap;     // y eksenine en uzak kosenin uzakligi; dik silindir bunu sarar
+    float merkez_yaricap;    // kutu merkezine en uzak kosenin uzakligi; kure bunu sarar
 
     bool yukle(const char* yol, float hedef_boy) {
         vbo = 0;
         kose_sayisi = 0;
         yatay_yaricap = 0.0f;
+        merkez_yaricap = 0.0f;
         std::vector<float> veri;
         if (!fbx_oku(yol, hedef_boy, veri, kutu_min, kutu_max, renk)) return false;
         kose_sayisi = (int)(veri.size() / KOSE_FLOAT);
-        // cokgen kesitli modellerde (varil gibi) koseler kutunun yari genisliginden disari tasar
-        for (size_t i = 0; i < veri.size(); i += KOSE_FLOAT)
-            yatay_yaricap = glm::max(yatay_yaricap, glm::length(glm::vec2(veri[i], veri[i + 2])));
+        // cokgen kesitli modellerde koseler kutunun yari genisliginden disari tasar; yaricaplar
+        // kutudan degil gercek koselerden hesaplanir ki sekil modeli tam sarsin
+        glm::vec3 kutu_merkezi = (kutu_min + kutu_max) * 0.5f;
+        for (size_t i = 0; i < veri.size(); i += KOSE_FLOAT) {
+            glm::vec3 p(veri[i], veri[i + 1], veri[i + 2]);
+            yatay_yaricap = glm::max(yatay_yaricap, glm::length(glm::vec2(p.x, p.z)));
+            merkez_yaricap = glm::max(merkez_yaricap, glm::length(p - kutu_merkezi));
+        }
 #ifndef TEST_DERLEME
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);

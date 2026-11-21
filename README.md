@@ -89,8 +89,8 @@ sh araclar/ekran_testi.sh     # programin tamami gercek OpenGL ile (yalnizca Lin
 | `test/carpisma_test.cpp` | 6 çarpışma testi: elle hesaplanmış durumlar + 2000 rastgele çiftin kaba örneklemeyle karşılaştırılması (143 kontrol) |
 | `test/frustum_test.cpp` | Kamera ve frustum düzlemleri, rastgele noktaların clip uzayıyla karşılaştırılması (28 kontrol) |
 | `test/fbx_yukle_test.cpp` | 5 modelin yüklenmesi, ölçeklenmesi, normaller, materyal renkleri, olmayan dosya |
-| `test/sahne_test.cpp` | Şekillerin modellere oturması, dönüşün `glRotatef` ile aynılığı, kırpma küresinin her açıda modeli kapsaması, her çiftte çarpışmanın başladığı mesafenin bağımsız bir ızgara taramasıyla karşılaştırılması, kameraya göre taşıma, hız sınırı, frustum köşeleri (109 kontrol) |
-| `test/ekran/senaryo*.txt` | Programı Xvfb üzerinde senaryolu tuş/fare girdileriyle çalıştırır, ekrandan piksel okur; her karede GL hatası ve durum sızıntısı denetler. Takılma, simge durumu, pencere boyutu ve açılışta K da sınanır (3 senaryo, 57 kontrol) |
+| `test/sahne_test.cpp` | Şekillerin modellere oturması, dönüşün `glRotatef` ile aynılığı, kırpma küresinin her açıda modeli kapsaması, her çiftte çarpışmanın başladığı mesafenin bağımsız bir ızgara taramasıyla karşılaştırılması, kameraya göre taşıma, hız sınırı, frustum köşeleri (111 kontrol) |
+| `test/ekran/senaryo*.txt` | Programı Xvfb üzerinde senaryolu tuş/fare girdileriyle çalıştırır, ekrandan piksel okur; her karede GL hatası ve durum sızıntısı denetler. Takılma, simge durumu, pencere boyutu ve açılışta K da sınanır (3 senaryo, 58 kontrol) |
 
 `SANITIZER=1` ile iki betik de AddressSanitizer + UBSan altında çalışır (Linux/macOS).
 

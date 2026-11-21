@@ -13,6 +13,8 @@ piksel yesil > 3000
 piksel kirmizi = 0
 piksel sari = 0
 piksel renkli > 10000
+# siyah bomba renkli sinifina girmez; kendi bolgesinde koyu piksel olarak aranir
+piksel_bolge 460 290 520 350 koyu > 300
 
 # G: sekiller gizlenir, modeller kalir
 tikla G
@@ -23,7 +25,7 @@ piksel renkli > 10000
 tikla G
 kare 1
 
-# carpisma: araba kameranin sagina surulur ve agaca carpar (kapsul - silindir)
+# carpisma: araba kameranin sagina surulur ve kuyuya carpar (kapsul - silindir)
 bas SAG
 kare 150
 birak SAG
@@ -31,7 +33,7 @@ kare 1
 baslik_icerir carpisan cift: 1
 yakala
 piksel kirmizi > 500
-# kameraya gore sag: kirmizi agacin bolgesinde; dunya ekseniyle gitseydi varile carpardi
+# kameraya gore sag: kirmizi kuyunun bolgesinde; dunya ekseniyle gitseydi mantara carpardi
 piksel_bolge 650 150 880 430 kirmizi > 1500
 piksel_bolge 555 420 645 540 kirmizi = 0
 tikla R
@@ -150,7 +152,7 @@ degisim > 500
 tikla R
 tikla 5
 kare 1
-baslik_icerir secili: varil
+baslik_icerir secili: mantar
 yakala
 bas PGUP
 kare 30

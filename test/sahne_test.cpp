@@ -71,6 +71,17 @@ void sekil_sozlesmesi(std::vector<float>* veri) {
             snprintf(ad, sizeof(ad), "%s: silindir modele siki oturuyor", n.ad);
             bekle(yakin(en_uzak, n.sekil.yaricap, 1e-4f), ad);
         }
+        if (n.sekil.tip == KURE) {
+            // kure modelin butun koselerini sarmali ve gereksiz buyuk olmamali
+            std::vector<glm::vec3> k = dunya_koseleri(n, veri[i]);
+            float en_uzak = 0.0f;
+            for (size_t j = 0; j < k.size(); j++)
+                en_uzak = glm::max(en_uzak, glm::length(k[j] - n.sekil.konum));
+            snprintf(ad, sizeof(ad), "%s: modelin tum koseleri kurenin icinde", n.ad);
+            bekle(en_uzak <= n.sekil.yaricap + 1e-4f, ad);
+            snprintf(ad, sizeof(ad), "%s: kure modele siki oturuyor", n.ad);
+            bekle(yakin(en_uzak, n.sekil.yaricap, 1e-4f), ad);
+        }
         if (n.sekil.tip == KAPSUL && !n.yatay_kapsul) {
             snprintf(ad, sizeof(ad), "%s: dik kapsul ekseni y", n.ad);
             bekle(yakin3(n.sekil.eksen, glm::vec3(0.0f, 1.0f, 0.0f), 1e-6f), ad);
@@ -383,9 +394,9 @@ int main() {
         return 1;
     }
     // sahneyi_kur ile ayni dosya ve boylar; koseler kapsama testleri icin yeniden okunur
-    const char* dosya[NESNE_SAYISI] = { "models/araba.fbx", "models/insan.fbx", "models/agac.fbx",
-                                        "models/kasa.fbx", "models/varil.fbx" };
-    float boy[NESNE_SAYISI] = { 3.2f, 1.8f, 4.0f, 1.2f, 1.1f };
+    const char* dosya[NESNE_SAYISI] = { "models/araba.fbx", "models/insan.fbx", "models/kuyu.fbx",
+                                        "models/bomba.fbx", "models/mantar.fbx" };
+    float boy[NESNE_SAYISI] = { 3.2f, 1.8f, 2.2f, 0.9f, 1.2f };
     std::vector<float> veri[NESNE_SAYISI];
     for (int i = 0; i < NESNE_SAYISI; i++) {
         glm::vec3 a, b, r;

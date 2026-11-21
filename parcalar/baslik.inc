@@ -1,4 +1,8 @@
-// Bilgisayar Grafigi - Odev 1
+/*      SAKARYA UNIVERSITESI - BILGISAYAR MUHENDISLIGI 
+        BILGISAYAR GRAFIGI DERSI 1. ODEV
+        MERVAN AKSU - B221210379
+*/
+
 // 5 FBX modelli sahne, kure/silindir/kapsul ile carpisma denetimi, orbit kamera, frustum kirpma
 //
 // Kamera: sol fare dondur, sag fare kaydir, tekerlek yaklas (klavye: W/A/S/D, Z/X)

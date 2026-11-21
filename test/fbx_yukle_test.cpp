@@ -60,9 +60,9 @@ void dene(const char* yol, float hedef_boy) {
 
 int main() {
     // sahnedeki dosyalar ve boylar
-    const char* dosyalar[] = { "models/araba.fbx", "models/insan.fbx", "models/agac.fbx",
-                               "models/kasa.fbx", "models/varil.fbx" };
-    float boylar[] = { 3.2f, 1.8f, 4.0f, 1.2f, 1.1f };
+    const char* dosyalar[] = { "models/araba.fbx", "models/insan.fbx", "models/kuyu.fbx",
+                               "models/bomba.fbx", "models/mantar.fbx" };
+    float boylar[] = { 3.2f, 1.8f, 2.2f, 0.9f, 1.2f };
     for (int i = 0; i < 5; i++) dene(dosyalar[i], boylar[i]);
 
     // olmayan dosya cokmeden false donmeli

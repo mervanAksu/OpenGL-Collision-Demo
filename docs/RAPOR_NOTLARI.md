@@ -23,8 +23,8 @@ her başlığın altına programdan aldığın ekran görüntüsünü koy.
 |---|---|---|
 | araba | yatay kapsül | uzun kenar = boy, diğer iki kenarın büyüğü / 2 = yarıçap |
 | insan | dik kapsül | yükseklik = boy, dar yatay kenar / 2 = yarıçap |
-| ağaç, varil | dik silindir | yükseklik = boy, y eksenine en uzak köşenin uzaklığı = yarıçap |
-| kasa | küre | kutu yarı köşegeninin 0.8'i |
+| kuyu, mantar | dik silindir | yükseklik = boy, y eksenine en uzak köşenin uzaklığı = yarıçap |
+| bomba | küre | kutu merkezine en uzak köşenin uzaklığı = yarıçap (fitil dahil) |
 
 Şekiller `glBegin(GL_LINE_LOOP / GL_LINE_STRIP / GL_LINES)` ile tel kafes çizilir; çarpışan kırmızı, diğerleri yeşil.
 

@@ -35,8 +35,7 @@ void sekil_olustur(Nesne& n, SekilTipi tip, bool yatay) {
     n.uzun_eksen = glm::vec3(0.0f, 1.0f, 0.0f);
 
     if (tip == KURE) {
-        // kutunun kosegenleri disarida kalsin diye yarim kosegenden biraz kucuk
-        n.sekil.yaricap = glm::length(boyut) * 0.5f * 0.8f;
+        n.sekil.yaricap = n.model.merkez_yaricap;
         n.sekil.boy = 0.0f;
     } else if (tip == SILINDIR) {
         n.sekil.yaricap = n.model.yatay_yaricap;
@@ -85,10 +84,11 @@ void baslangic_konumlari() {
 }
 
 bool sahneyi_kur() {
-    const char* dosya[NESNE_SAYISI] = { "models/araba.fbx", "models/insan.fbx", "models/agac.fbx",
-                                        "models/kasa.fbx", "models/varil.fbx" };
-    const char* ad[NESNE_SAYISI] = { "araba", "insan", "agac", "kasa", "varil" };
-    float boy[NESNE_SAYISI] = { 3.2f, 1.8f, 4.0f, 1.2f, 1.1f };
+    const char* dosya[NESNE_SAYISI] = { "models/araba.fbx", "models/insan.fbx", "models/kuyu.fbx",
+                                        "models/bomba.fbx", "models/mantar.fbx" };
+    const char* ad[NESNE_SAYISI] = { "araba", "insan", "kuyu", "bomba", "mantar" };
+    // her modelin en uzun kenari bu boya olceklenir (metre)
+    float boy[NESNE_SAYISI] = { 3.2f, 1.8f, 2.2f, 0.9f, 1.2f };
     SekilTipi tip[NESNE_SAYISI] = { KAPSUL, KAPSUL, SILINDIR, KURE, SILINDIR };
 
     for (int i = 0; i < NESNE_SAYISI; i++) {
@@ -144,7 +144,7 @@ void frustum_koseleri(const glm::mat4& pv, glm::vec3 kose[8]) {
 
 #ifndef TEST_DERLEME
 void zemin_ciz() {
-    glColor3f(0.35f, 0.35f, 0.38f);
+    glColor3f(0.45f, 0.47f, 0.50f);
     glBegin(GL_LINES);
     for (int i = -10; i <= 10; i++) {
         glVertex3f((float)i, 0.0f, -10.0f); glVertex3f((float)i, 0.0f, 10.0f);
@@ -307,7 +307,7 @@ void boyut_degisti(GLFWwindow*, int en, int boy) {
 }
 
 void ayarlar() {
-    glClearColor(0.12f, 0.13f, 0.16f, 1.0f);
+    glClearColor(0.62f, 0.66f, 0.70f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glShadeModel(GL_SMOOTH);
     float ortam[4] = { 0.35f, 0.35f, 0.35f, 1.0f };

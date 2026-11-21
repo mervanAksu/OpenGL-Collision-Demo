@@ -1,4 +1,8 @@
-// Bilgisayar Grafigi - Odev 1
+/*      SAKARYA UNIVERSITESI - BILGISAYAR MUHENDISLIGI 
+        BILGISAYAR GRAFIGI DERSI 1. ODEV
+        MERVAN AKSU - B221210379
+*/
+
 // 5 FBX modelli sahne, kure/silindir/kapsul ile carpisma denetimi, orbit kamera, frustum kirpma
 //
 // Kamera: sol fare dondur, sag fare kaydir, tekerlek yaklas (klavye: W/A/S/D, Z/X)
@@ -119,17 +123,24 @@ struct FbxModel {
     glm::vec3 renk;          // ilk materyalin rengi, yoksa acik gri
     glm::vec3 kutu_min, kutu_max;
     float yatay_yaricap;     // y eksenine en uzak kosenin uzakligi; dik silindir bunu sarar
+    float merkez_yaricap;    // kutu merkezine en uzak kosenin uzakligi; kure bunu sarar
 
     bool yukle(const char* yol, float hedef_boy) {
         vbo = 0;
         kose_sayisi = 0;
         yatay_yaricap = 0.0f;
+        merkez_yaricap = 0.0f;
         std::vector<float> veri;
         if (!fbx_oku(yol, hedef_boy, veri, kutu_min, kutu_max, renk)) return false;
         kose_sayisi = (int)(veri.size() / KOSE_FLOAT);
-        // cokgen kesitli modellerde (varil gibi) koseler kutunun yari genisliginden disari tasar
-        for (size_t i = 0; i < veri.size(); i += KOSE_FLOAT)
-            yatay_yaricap = glm::max(yatay_yaricap, glm::length(glm::vec2(veri[i], veri[i + 2])));
+        // cokgen kesitli modellerde koseler kutunun yari genisliginden disari tasar; yaricaplar
+        // kutudan degil gercek koselerden hesaplanir ki sekil modeli tam sarsin
+        glm::vec3 kutu_merkezi = (kutu_min + kutu_max) * 0.5f;
+        for (size_t i = 0; i < veri.size(); i += KOSE_FLOAT) {
+            glm::vec3 p(veri[i], veri[i + 1], veri[i + 2]);
+            yatay_yaricap = glm::max(yatay_yaricap, glm::length(glm::vec2(p.x, p.z)));
+            merkez_yaricap = glm::max(merkez_yaricap, glm::length(p - kutu_merkezi));
+        }
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, veri.size() * sizeof(float), veri.data(), GL_STATIC_DRAW);
@@ -510,8 +521,7 @@ void sekil_olustur(Nesne& n, SekilTipi tip, bool yatay) {
     n.uzun_eksen = glm::vec3(0.0f, 1.0f, 0.0f);
 
     if (tip == KURE) {
-        // kutunun kosegenleri disarida kalsin diye yarim kosegenden biraz kucuk
-        n.sekil.yaricap = glm::length(boyut) * 0.5f * 0.8f;
+        n.sekil.yaricap = n.model.merkez_yaricap;
         n.sekil.boy = 0.0f;
     } else if (tip == SILINDIR) {
         n.sekil.yaricap = n.model.yatay_yaricap;
@@ -560,10 +570,11 @@ void baslangic_konumlari() {
 }
 
 bool sahneyi_kur() {
-    const char* dosya[NESNE_SAYISI] = { "models/araba.fbx", "models/insan.fbx", "models/agac.fbx",
-                                        "models/kasa.fbx", "models/varil.fbx" };
-    const char* ad[NESNE_SAYISI] = { "araba", "insan", "agac", "kasa", "varil" };
-    float boy[NESNE_SAYISI] = { 3.2f, 1.8f, 4.0f, 1.2f, 1.1f };
+    const char* dosya[NESNE_SAYISI] = { "models/araba.fbx", "models/insan.fbx", "models/kuyu.fbx",
+                                        "models/bomba.fbx", "models/mantar.fbx" };
+    const char* ad[NESNE_SAYISI] = { "araba", "insan", "kuyu", "bomba", "mantar" };
+    // her modelin en uzun kenari bu boya olceklenir (metre)
+    float boy[NESNE_SAYISI] = { 3.2f, 1.8f, 2.2f, 0.9f, 1.2f };
     SekilTipi tip[NESNE_SAYISI] = { KAPSUL, KAPSUL, SILINDIR, KURE, SILINDIR };
 
     for (int i = 0; i < NESNE_SAYISI; i++) {
@@ -618,7 +629,7 @@ void frustum_koseleri(const glm::mat4& pv, glm::vec3 kose[8]) {
 }
 
 void zemin_ciz() {
-    glColor3f(0.35f, 0.35f, 0.38f);
+    glColor3f(0.45f, 0.47f, 0.50f);
     glBegin(GL_LINES);
     for (int i = -10; i <= 10; i++) {
         glVertex3f((float)i, 0.0f, -10.0f); glVertex3f((float)i, 0.0f, 10.0f);
@@ -781,7 +792,7 @@ void boyut_degisti(GLFWwindow*, int en, int boy) {
 }
 
 void ayarlar() {
-    glClearColor(0.12f, 0.13f, 0.16f, 1.0f);
+    glClearColor(0.62f, 0.66f, 0.70f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glShadeModel(GL_SMOOTH);
     float ortam[4] = { 0.35f, 0.35f, 0.35f, 1.0f };

@@ -171,6 +171,8 @@ static int sinifta(const unsigned char* p, const char* sinif) {
     if (strcmp(sinif, "kirmizi") == 0) return kirmizi;
     if (strcmp(sinif, "yesil") == 0) return yesil;
     if (strcmp(sinif, "sari") == 0) return sari;
+    // cok koyu (bomba gibi siyah modeller); arka plan ve izgara acik oldugu icin karismaz
+    if (strcmp(sinif, "koyu") == 0) return r < 40 && g < 40 && b < 40;
     if (strcmp(sinif, "renkli") == 0) {
         int en_buyuk = r > g ? (r > b ? r : b) : (g > b ? g : b);
         int en_kucuk = r < g ? (r < b ? r : b) : (g < b ? g : b);
